@@ -1,0 +1,16 @@
++ Ordering system
+    - user can order varieties
+    - user can order the same type of food multiple times
+    - user can cancel order within 10 mins of order and get refunded
+    - user cant cancel order after it has been answered
+    - an order cant be answered if it has been cancelled
+    - a user cant place order with an insufficent account balance
+    - the canteen can view all the orders for that day
+
++ Recharging system
+    - system auto-generates a number, specified by the admin, of 16-digit tokens with a particular amount
+    - a token cant be used twice
+    - each and every token is unique
+
++ Menu system
+    - a user can view all the food on the menu for that day

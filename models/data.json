@@ -1,0 +1,21 @@
+{
+  "user_id": 1,
+  "time_of_order": "31-12-19",
+  "orders": [
+    {
+      "name": "Rice",
+      "cost": 200,
+      "category": "Food"
+    },
+    {
+      "name": "Meat",
+      "cost": 200,
+      "category": "Specials"
+    },
+    {
+      "name": "Pepsi",
+      "cost": 100,
+      "category": "Drinks"
+    }
+  ]
+}

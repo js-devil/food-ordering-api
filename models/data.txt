@@ -1,0 +1,27 @@
+- Users
+    + username
+    + password
+    + phone
+    + image_url
+    + notify (true, false)
+    + locatio
+
+- food_menu
+    + type
+    + quantity
+    + name
+    + price
+    + date_added
+    + status (unavailable, in prepared, available),
+    + image_url
+
+- recharge
+    + token
+    + amount
+    + available (true, false)
+    + date_added
+
+- food_orders
+    + user_id
+    + time_of_order
+    + order
