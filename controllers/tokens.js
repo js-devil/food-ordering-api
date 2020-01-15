@@ -76,7 +76,6 @@ class TokenController {
             return;
           }
 
-          // const []
           await client.query(
             `UPDATE users SET balance = balance + ? WHERE id = ?`,
             [rows[0].amount, user.id]

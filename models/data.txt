@@ -24,4 +24,15 @@
 - food_orders
     + user_id
     + time_of_order
-    + order
+    + orders
+
+// CLEARDB_DATABASE_URL
+// mysql://bfa043be50be43:8ad03da7@us-cdbr-iron-east-05.cleardb.net/heroku_af0e7c041da29ba?reconnect=true
+{
+  "host": "us-cdbr-iron-east-05.cleardb.net",
+  "user": "bfa043be50be43",
+  "password": "",
+  "database": "heroku_af0e7c041da29ba"
+}
+
+// localhost

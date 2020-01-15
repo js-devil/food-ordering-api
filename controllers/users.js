@@ -37,13 +37,11 @@ class UsersController {
         return;
       }
 
-      await client.query(
+      let [query, valsq] = await client.query(
         `INSERT INTO users (username, phone, password) VALUES (?, ?, ?)`,
         [...Object.values(validated.success).slice(0, 2), hash]
       );
-
-      let [query] = await client.query("SELECT LAST_INSERT_ID() FROM users");
-      const id = query[0]["LAST_INSERT_ID()"];
+      const id = query.insertId;
 
       client.end();
       const token = jwt.sign(

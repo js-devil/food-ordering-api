@@ -61,8 +61,8 @@ class MenuController {
       menu,
       vals
     ] = await client.query(
-      `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE date_added`,
-      [today]
+      `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE status = ? AND date_added`,
+      ['Available', today]
     );
 
     if (!menu.length) {
