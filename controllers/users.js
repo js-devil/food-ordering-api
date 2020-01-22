@@ -28,11 +28,11 @@ class UsersController {
       const [
         rows,
         fields
-      ] = await client.query(`SELECT * FROM users WHERE username = ?`, [
-        req.body.username
+      ] = await client.query(`SELECT * FROM users WHERE username = ? OR phone=?`, [
+        req.body.username, req.body.phone
       ]);
       if (rows.length > 0) {
-        res.status(400).json({ error: "this username has been taken" });
+        res.status(400).json({ error: "this username or phone number is already registered" });
         client.end();
         return;
       }
