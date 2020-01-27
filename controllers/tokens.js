@@ -59,7 +59,7 @@ class TokenController {
           const client = await mysql.createConnection(databaseConfig);
           const [
             rows,
-            vals
+            valss
           ] = await client.query("SELECT * FROM tokens WHERE token=?", [
             req.body.token
           ]);
@@ -70,7 +70,7 @@ class TokenController {
             return;
           }
 
-          if (rows[0].avaiable == 0) {
+          if (rows[0].available == 0) {
             res.send({ error: "This token has been used!" });
             client.end();
             return;
@@ -80,12 +80,16 @@ class TokenController {
             `UPDATE users SET balance = balance + ? WHERE id = ?`,
             [rows[0].amount, user.id]
           );
+
           await client.query(
             `UPDATE tokens SET available = 0, used_by = ?, date_used = current_timestamp() WHERE id = ?`,
             [user.id, rows[0].id]
           );
 
-          res.send({ status: "Token loaded successfully!" });
+          const [row_bals, vals] = await client.query(`SELECT * FROM users WHERE id = ?`, [user.id])
+          const balance = row_bals[0].balance
+
+          res.send({ status: "Token loaded successfully!", balance });
           client.end();
           return;
         }
