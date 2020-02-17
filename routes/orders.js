@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/order", auth, OrderController.makeOrder);
 router.post("/order/:order_id/answer", auth, OrderController.attendToOrder);
 router.post("/order/:order_id/cancel", auth, OrderController.cancelOrder);
+router.post("/order/:order_id/reorder", auth, OrderController.reorder);
 
 // get all orders for that day route
 router.get("/orders/all", auth, OrderController.getAllOrders);

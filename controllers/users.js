@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import registerValidation from "../middleware/validation/register";
 import loginValidation from "../middleware/validation/login";
 
-class UsersController {
+const UserController = {
   async register(req, res) {
     try {
       const validated = registerValidation(req.body);
@@ -62,7 +62,7 @@ class UsersController {
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
-  }
+  },
 
   async login(req, res, next) {
     try {
@@ -112,7 +112,5 @@ class UsersController {
     }
   }
 }
-
-const UserController = new UsersController();
 
 export default UserController;

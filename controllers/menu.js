@@ -4,8 +4,8 @@ import databaseConfig from "../models/db";
 import jwt from "jsonwebtoken";
 import menuValidation from "../middleware/validation/menu";
 
-class MenuController {
-  async addToMenu(req, res) {
+const MenuController = {
+  addToMenu(req, res) {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -52,7 +52,7 @@ class MenuController {
         return;
       }
     });
-  }
+  },
 
   async getMenu(req, res) {
     const client = await mysql.createConnection(databaseConfig);
@@ -74,9 +74,9 @@ class MenuController {
     client.end();
     res.send({ menu });
     return;
-  }
+  },
 
-  async updateQuantity(req, res) {
+  updateQuantity(req, res) {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -108,4 +108,4 @@ class MenuController {
 }
 
 // const menuController =
-export default new MenuController();
+export default MenuController;

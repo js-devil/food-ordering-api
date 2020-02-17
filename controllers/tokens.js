@@ -3,8 +3,8 @@ import databaseConfig from "../models/db";
 
 import jwt from "jsonwebtoken";
 
-class TokenController {
-  async generateToken(req, res) {
+const TokenController = {
+  generateToken(req, res) {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -39,9 +39,9 @@ class TokenController {
         return;
       }
     });
-  }
+  },
 
-  async loadToken(req, res) {
+  loadToken(req, res) {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err, user) => {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -95,9 +95,9 @@ class TokenController {
         }
       }
     });
-  }
+  },
 
-  async getTokens(req, res) {
+  getTokens(req, res) {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -121,5 +121,4 @@ class TokenController {
   }
 }
 
-const tokenController = new TokenController();
-export default tokenController;
+export default TokenController;
