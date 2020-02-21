@@ -110,6 +110,72 @@ const UserController = {
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
+  },
+
+  changePassword(req, res) {
+    jwt.verify(req.token, process.env.SECRET_KEY, async (err, user) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      } else {
+        const { id } = user
+        const client = await mysql.createConnection(databaseConfig);
+
+        const { old_password, new_password } = req.body
+
+        const [rows, fields] = await client.query(
+          `SELECT * FROM users WHERE id = ?`,
+          id
+        );
+        if (!rows.length) {
+          res.status(400).json({ error: "This user does not exist" });
+          client.end();
+          return;
+        }
+
+        const validPassword = await bcrypt.compare(
+          old_password,
+          rows[0].password
+        );
+
+        if (validPassword) {
+          const hash = await bcrypt.hash(new_password, 10);
+          await client.query(`UPDATE users SET password=? WHERE id = ?`, [hash, id])
+          client.end();
+          res.send({ status: 'Password has been changed!' });
+          return;
+        }
+
+        client.end();
+        res.status(400).json({ error: "invalid password" });
+        return;
+      }
+    })
+  },
+
+  changeAvatar(req, res) {
+    jwt.verify(req.token, process.env.SECRET_KEY, async (err, user) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      } else {
+        const { id } = user
+        const client = await mysql.createConnection(databaseConfig);
+
+        const [rows, fields] = await client.query(
+          `SELECT * FROM users WHERE id = ?`,
+          [id]
+        );
+        if (!rows.length) {
+          res.status(400).json({ error: "This user does not exist" });
+          client.end();
+          return;
+        }
+
+        await client.query(`UPDATE users SET image_url=? WHERE id = ?`, [req.body.image_url, id])
+        client.end();
+        res.send({ status: 'Your avatar has been changed!' });
+        return;
+      }
+    })
   }
 }
 
