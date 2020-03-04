@@ -168,8 +168,9 @@ const OrderController = {
             orders,
             vals
           ] = await client.query(
-            `SELECT orders.user_order, orders.total, orders.completed, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order, users.username AS username, users.image_url AS user_img FROM orders INNER JOIN users ON users.id = orders.user_id WHERE time_of_order=? AND completed=?`,
-            [today, null]
+            // `SELECT orders.id, orders.user_order, orders.total, orders.completed, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order, users.username AS username, users.image_url AS user_img FROM orders INNER JOIN users ON users.id = orders.user_id WHERE time_of_order=?`,
+            // [today]
+            `SELECT orders.id, orders.user_order, orders.total, orders.completed, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order, users.username AS username, users.image_url AS user_img FROM orders INNER JOIN users ON users.id = orders.user_id`
           );
 
           if (!orders.length) {
