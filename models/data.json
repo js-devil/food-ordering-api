@@ -19,3 +19,4 @@
     }
   ]
 }
+// "start": "nodemon index.js --exec babel-node --",
