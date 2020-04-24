@@ -3,7 +3,7 @@ import databaseConfig from "../models/db";
 
 import jwt from "jsonwebtoken";
 
-const cancelExpired = date => {
+const cancelExpired = (date) => {
   return new Date() - new Date(date) > 10 * 60 * 1000 ? true : false;
 };
 
@@ -33,9 +33,9 @@ const OrderController = {
         const client = await mysql.createConnection(databaseConfig);
         let [
           query,
-          vals
+          vals,
         ] = await client.query("SELECT balance FROM users WHERE id = ?", [
-          user.id
+          user.id,
         ]);
         if (query[0].balance < total) {
           res.status(400).json({ error: "Insufficient Balance!" });
@@ -52,14 +52,20 @@ const OrderController = {
         for (let user_order of req.body.order) {
           const [
             rows,
-            vals
+            vals,
           ] = await client.query(`SELECT quantity FROM menu WHERE id = ?`, [
-            user_order.id
+            user_order.id,
           ]);
           if (user_order.user_quantity > rows[0].quantity) {
-            res.status(400).json({ error: `You can only buy ${user_order.name} worth N${rows[0].price*rows[0].quantity} ` })
+            res
+              .status(400)
+              .json({
+                error: `You can only buy ${user_order.name} worth N${
+                  rows[0].price * rows[0].quantity
+                } `,
+              });
             client.end();
-            return
+            return;
           }
 
           await client.query(
@@ -70,7 +76,7 @@ const OrderController = {
           if (rows[0].quantity == 1) {
             await client.query(`UPDATE menu SET status=? WHERE id = ?`, [
               "Unavailable",
-              user_order.id
+              user_order.id,
             ]);
           }
         }
@@ -101,7 +107,13 @@ const OrderController = {
 
         const client = await mysql.createConnection(databaseConfig);
 
-        let [prev_order, prev_vals] = await client.query(`SELECT user_order, total FROM orders WHERE id = ?`, [req.params.order_id])
+        let [
+          prev_order,
+          prev_vals,
+        ] = await client.query(
+          `SELECT user_order, total FROM orders WHERE id = ?`,
+          [req.params.order_id]
+        );
         let { user_order, total } = prev_order[0];
 
         if (req.body.balance < total) {
@@ -110,17 +122,23 @@ const OrderController = {
           return;
         }
 
-        for(let item of JSON.parse(user_order)) {
-          const [menu_item, item_vsl] = await client.query(`SELECT price, quantity FROM menu WHERE id = ?`, [item.id])
-          if(item.quantity > menu_item[0].quantity) {
-            let price = menu_item[0].price*menu_item[0].quantity
-            let error = `You can only buy ${item.name} worth N${price} `
-            if(!price) {
-              error = `${item.name} is finished at the moment`
+        for (let item of JSON.parse(user_order)) {
+          const [
+            menu_item,
+            item_vsl,
+          ] = await client.query(
+            `SELECT price, quantity FROM menu WHERE id = ?`,
+            [item.id]
+          );
+          if (item.quantity > menu_item[0].quantity) {
+            let price = menu_item[0].price * menu_item[0].quantity;
+            let error = `You can only buy ${item.name} worth N${price} `;
+            if (!price) {
+              error = `${item.name} is finished at the moment`;
             }
-            res.status(400).json({ error })
-            client.end()
-            return
+            res.status(400).json({ error });
+            client.end();
+            return;
           }
 
           // return
@@ -132,7 +150,7 @@ const OrderController = {
           if (menu_item[0].quantity == 1) {
             await client.query(`UPDATE menu SET status=? WHERE id = ?`, [
               "Unavailable",
-              user_order.id
+              user_order.id,
             ]);
           }
         }
@@ -146,7 +164,10 @@ const OrderController = {
           `UPDATE users SET balance = balance - ? WHERE id = ?`,
           [total, user.id]
         );
-        res.send({ status: "This order has been reordered!", balance: req.body.balance - total });
+        res.send({
+          status: "This order has been reordered!",
+          balance: req.body.balance - total,
+        });
         client.end();
         return;
       }
@@ -164,10 +185,7 @@ const OrderController = {
         ) {
           const today = new Date().toISOString().slice(0, 10);
           const client = await mysql.createConnection(databaseConfig);
-          let [
-            orders,
-            vals
-          ] = await client.query(
+          let [orders, vals] = await client.query(
             // `SELECT orders.id, orders.user_order, orders.total, orders.completed, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order, users.username AS username, users.image_url AS user_img FROM orders INNER JOIN users ON users.id = orders.user_id WHERE time_of_order=?`,
             // [today]
             `SELECT orders.id, orders.user_order, orders.total, orders.completed, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order, users.username AS username, users.image_url AS user_img FROM orders INNER JOIN users ON users.id = orders.user_id`
@@ -179,9 +197,9 @@ const OrderController = {
             return;
           }
 
-          orders = orders.map(key => {
-            key.order = JSON.parse(key.user_order)
-            return Object.assign({}, key)
+          orders = orders.map((key) => {
+            key.order = JSON.parse(key.user_order);
+            return Object.assign({}, key);
           });
 
           res.send({ orders });
@@ -211,7 +229,7 @@ const OrderController = {
         const client = await mysql.createConnection(databaseConfig);
         let [
           orders,
-          vals
+          vals,
         ] = await client.query(
           `SELECT *, DATE_FORMAT(orders.time_of_order, '%Y-%m-%d') AS time_of_order FROM orders WHERE user_id=?`,
           [user.id]
@@ -242,9 +260,9 @@ const OrderController = {
 
           let [
             query,
-            vals
+            vals,
           ] = await client.query("SELECT * FROM orders WHERE id=?", [
-            req.params.order_id
+            req.params.order_id,
           ]);
           if (!query.length) {
             res.status(400).json({ error: "Invalid request!" });
@@ -261,7 +279,7 @@ const OrderController = {
           }
 
           await client.query("UPDATE orders SET completed=1 WHERE id=?", [
-            req.params.order_id
+            req.params.order_id,
           ]);
           res.send({ status: "Order confirmed successfully!" });
           client.end();
@@ -291,7 +309,7 @@ const OrderController = {
 
         let [
           query,
-          vals
+          vals,
         ] = await client.query(
           "SELECT * FROM orders WHERE id=? AND user_id=?",
           [req.params.order_id, user.id]
@@ -320,7 +338,7 @@ const OrderController = {
         const order = JSON.parse(query[0].user_order);
 
         await client.query("UPDATE orders SET completed=0 WHERE id=?", [
-          req.params.order_id
+          req.params.order_id,
         ]);
         await client.query(
           `UPDATE users SET balance = balance + ? WHERE id = ?`,
@@ -334,14 +352,17 @@ const OrderController = {
           );
         }
 
-        const [row_bals, valsss] = await client.query(`SELECT * FROM users WHERE id = ?`, [user.id])
-          const { balance } = row_bals[0]
+        const [
+          row_bals,
+          valsss,
+        ] = await client.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
+        const { balance } = row_bals[0];
         res.send({ status: "This order has been cancelled", balance });
         client.end();
         return;
       }
     });
-  }
-}
+  },
+};
 
 export default OrderController;

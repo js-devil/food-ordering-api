@@ -1,31 +1,24 @@
 import Joi from "@hapi/joi";
 
-const login = payload => {
+const login = (payload) => {
   try {
     const loginSchema = Joi.object({
-      username: Joi.string()
-        .min(6)
-        .max(200)
-        .required(),
-      password: Joi.string()
-        .alphanum()
-        .min(6)
-        .max(30)
-        .required(),
-      location: Joi.string().min(8)
+      username: Joi.string().min(6).max(20).required(),
+      password: Joi.string().alphanum().min(6).max(20).required(),
+      location: Joi.string().min(8),
     });
 
     const { username, password, location } = payload;
     const { error, value } = loginSchema.validate({
       username,
       password,
-      location
+      location,
     });
 
     if (error === undefined || typeof error === "undefined") {
       return { success: value };
     } else {
-      const errorMsg = error.details.map(errorObject => errorObject.message);
+      const errorMsg = error.details.map((errorObject) => errorObject.message);
       return { failed: errorMsg };
     }
   } catch (e) {

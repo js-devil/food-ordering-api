@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
 
 import router from "./routes";
 // import controllers from "./controllers";
@@ -18,12 +19,15 @@ app.use(helmet());
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 
 // enabling CORS for all requests
 app.use(cors());
 
 // adding morgan to log HTTP requests
-app.use(morgan("combined"));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms")
+);
 
 // API Routes
 app.use("/users", router.users);

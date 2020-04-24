@@ -27,17 +27,23 @@ const UserController = {
 
       const [
         rows,
-        fields
-      ] = await client.query(`SELECT * FROM users WHERE username = ? OR phone=?`, [
-        req.body.username, req.body.phone
-      ]);
+        fields,
+      ] = await client.query(
+        `SELECT * FROM users WHERE username = ? OR phone=?`,
+        [req.body.username, req.body.phone]
+      );
       if (rows.length > 0) {
-        res.status(400).json({ error: "this username or phone number is already registered" });
+        res.status(400).json({
+          error: "this username or phone number is already registered",
+        });
         client.end();
         return;
       }
 
-      let [query, valsq] = await client.query(
+      let [
+        query,
+        valsq,
+      ] = await client.query(
         `INSERT INTO users (username, phone, password) VALUES (?, ?, ?)`,
         [...Object.values(validated.success).slice(0, 2), hash]
       );
@@ -47,7 +53,7 @@ const UserController = {
       const token = jwt.sign(
         {
           id,
-          username: req.body.username
+          username: req.body.username,
         },
         process.env.SECRET_KEY,
         { expiresIn: "30m" }
@@ -56,7 +62,7 @@ const UserController = {
         token,
         username: req.body.username,
         image_url: null,
-        balance: 0
+        balance: 0,
       });
       return;
     } catch (e) {
@@ -98,7 +104,7 @@ const UserController = {
       if (validPassword) {
         const { id, username, image_url, balance } = rows[0];
         const token = jwt.sign({ id, username }, process.env.SECRET_KEY, {
-          expiresIn: "30m"
+          expiresIn: "30m",
         });
 
         res.send({ token, username, image_url, balance });
@@ -117,10 +123,10 @@ const UserController = {
       if (err) {
         res.status(400).json({ error: err.message });
       } else {
-        const { id } = user
+        const { id } = user;
         const client = await mysql.createConnection(databaseConfig);
 
-        const { old_password, new_password } = req.body
+        const { old_password, new_password } = req.body;
 
         const [rows, fields] = await client.query(
           `SELECT * FROM users WHERE id = ?`,
@@ -139,9 +145,12 @@ const UserController = {
 
         if (validPassword) {
           const hash = await bcrypt.hash(new_password, 10);
-          await client.query(`UPDATE users SET password=? WHERE id = ?`, [hash, id])
+          await client.query(`UPDATE users SET password=? WHERE id = ?`, [
+            hash,
+            id,
+          ]);
           client.end();
-          res.send({ status: 'Password has been changed!' });
+          res.send({ status: "Password has been changed!" });
           return;
         }
 
@@ -149,7 +158,7 @@ const UserController = {
         res.status(400).json({ error: "invalid password" });
         return;
       }
-    })
+    });
   },
 
   changeAvatar(req, res) {
@@ -157,26 +166,29 @@ const UserController = {
       if (err) {
         res.status(400).json({ error: err.message });
       } else {
-        const { id } = user
+        const { id } = user;
         const client = await mysql.createConnection(databaseConfig);
 
-        const [rows, fields] = await client.query(
-          `SELECT * FROM users WHERE id = ?`,
-          [id]
-        );
+        const [
+          rows,
+          fields,
+        ] = await client.query(`SELECT * FROM users WHERE id = ?`, [id]);
         if (!rows.length) {
           res.status(400).json({ error: "This user does not exist" });
           client.end();
           return;
         }
 
-        await client.query(`UPDATE users SET image_url=? WHERE id = ?`, [req.body.image_url, id])
+        await client.query(`UPDATE users SET image_url=? WHERE id = ?`, [
+          req.body.image_url,
+          id,
+        ]);
         client.end();
-        res.send({ status: 'Your avatar has been changed!' });
+        res.send({ status: "Your avatar has been changed!" });
         return;
       }
-    })
-  }
-}
+    });
+  },
+};
 
 export default UserController;

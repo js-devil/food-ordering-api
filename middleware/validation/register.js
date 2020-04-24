@@ -1,21 +1,12 @@
 import Joi from "@hapi/joi";
 
-const registration = payload => {
+const registration = (payload) => {
   try {
     const registerSchema = Joi.object({
-      username: Joi.string()
-        .min(6)
-        .max(200)
-        .required(),
-      phone: Joi.string()
-        .min(11)
-        .max(11),
+      username: Joi.string().min(6).max(20).required(),
+      phone: Joi.string().length(11),
       location: Joi.string().min(8),
-      password: Joi.string()
-        .alphanum()
-        .min(6)
-        .max(30)
-        .required()
+      password: Joi.string().alphanum().min(6).max(20).required(),
     });
 
     const { username, phone, password, location } = payload;
@@ -23,13 +14,13 @@ const registration = payload => {
       username,
       phone,
       password,
-      location
+      location,
     });
 
     if (error === undefined || typeof error === "undefined") {
       return { success: value };
     } else {
-      const errorMsg = error.details.map(errorObject => errorObject.message);
+      const errorMsg = error.details.map((errorObject) => errorObject.message);
       return { failed: errorMsg };
     }
   } catch (e) {

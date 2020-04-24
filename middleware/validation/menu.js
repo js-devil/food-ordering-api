@@ -1,25 +1,14 @@
 import Joi from "@hapi/joi";
 
-const newMenu = payload => {
+const newMenu = (payload) => {
   try {
     const foodItemSchema = Joi.object({
-      name: Joi.string()
-        .min(6)
-        .max(200)
-        .required(),
-      quantity: Joi.string().required(),
-      price: Joi.string().required(),
-      category: Joi.string()
-        .min(4)
-        .max(200)
-        .required(),
-      status: Joi.string()
-        .min(6)
-        .max(200)
-        .required(),
-      image_url: Joi.string()
-        .min(6)
-        .max(200)
+      name: Joi.string().min(6).max(30).required(),
+      quantity: Joi.number().max(200).required(),
+      price: Joi.number().min(50).max(200).required(),
+      category: Joi.string().min(4).max(30).required(),
+      status: Joi.string().min(6).max(30).required(),
+      image_url: Joi.string().uri().lowercase(),
     });
 
     const { name, quantity, price, category, status, image_url } = payload;
@@ -29,13 +18,13 @@ const newMenu = payload => {
       price,
       category,
       status,
-      image_url
+      image_url,
     });
 
     if (error === undefined || typeof error === "undefined") {
       return { success: value };
     } else {
-      const errorMsg = error.details.map(errorObject => errorObject.message);
+      const errorMsg = error.details.map((errorObject) => errorObject.message);
       return { failed: errorMsg };
     }
   } catch (e) {
