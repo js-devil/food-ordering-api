@@ -57,13 +57,11 @@ const OrderController = {
             user_order.id,
           ]);
           if (user_order.user_quantity > rows[0].quantity) {
-            res
-              .status(400)
-              .json({
-                error: `You can only buy ${user_order.name} worth N${
-                  rows[0].price * rows[0].quantity
-                } `,
-              });
+            res.status(400).json({
+              error: `You can only buy ${user_order.name} worth N${
+                rows[0].price * rows[0].quantity
+              } `,
+            });
             client.end();
             return;
           }

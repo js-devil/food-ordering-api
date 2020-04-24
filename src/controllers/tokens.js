@@ -25,7 +25,7 @@ const TokenController = {
 
             client.end();
             res.send({
-              status: `${req.body.number_of_tokens} tokens were generated successfully`
+              status: `${req.body.number_of_tokens} tokens were generated successfully`,
             });
             return;
           }
@@ -59,9 +59,9 @@ const TokenController = {
           const client = await mysql.createConnection(databaseConfig);
           const [
             rows,
-            valss
+            valss,
           ] = await client.query("SELECT * FROM tokens WHERE token=?", [
-            req.body.token
+            req.body.token,
           ]);
 
           if (!rows.length) {
@@ -86,8 +86,11 @@ const TokenController = {
             [user.id, rows[0].id]
           );
 
-          const [row_bals, vals] = await client.query(`SELECT * FROM users WHERE id = ?`, [user.id])
-          const balance = row_bals[0].balance
+          const [
+            row_bals,
+            vals,
+          ] = await client.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
+          const balance = row_bals[0].balance;
 
           res.send({ status: "Token loaded successfully!", balance });
           client.end();
@@ -118,7 +121,7 @@ const TokenController = {
         return;
       }
     });
-  }
-}
+  },
+};
 
 export default TokenController;

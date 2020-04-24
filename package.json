@@ -7,7 +7,7 @@
     "start:dev": "nodemon index.js --exec babel-node --",
     "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel index.js --out-dir build"
+    "build": "babel src --out-dir build"
   },
   "author": "Oluwaseyi Joshua <kingkunn>",
   "license": "ISC",
@@ -18,7 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "helmet": "^3.21.2",
+    "helmet": "^3.21.2   ",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "mysql2": "^2.0.2"

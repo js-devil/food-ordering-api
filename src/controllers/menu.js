@@ -28,7 +28,7 @@ const MenuController = {
           const client = await mysql.createConnection(databaseConfig);
           const [
             rows,
-            rows_
+            rows_,
           ] = await client.query(
             `SELECT * FROM menu WHERE name = ? AND category = ?`,
             [valid.success.name, valid.success.category]
@@ -59,10 +59,10 @@ const MenuController = {
     const today = new Date().toISOString().slice(0, 10);
     const [
       menu,
-      vals
+      vals,
     ] = await client.query(
       `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE status = ? AND date_added`,
-      ['Available', today]
+      ["Available", today]
     );
 
     if (!menu.length) {
@@ -104,8 +104,8 @@ const MenuController = {
         return;
       }
     });
-  }
-}
+  },
+};
 
 // const menuController =
 export default MenuController;
