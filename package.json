@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Food Ordering API",
   "main": "index.js",
+  "engines": {
+    "node": "12.16.x"
+  },
   "scripts": {
     "start:dev": "nodemon src/index.js --exec babel-node --",
     "start": "node build/index.js",
