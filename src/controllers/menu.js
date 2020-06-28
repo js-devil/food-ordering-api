@@ -39,13 +39,37 @@ const MenuController = {
             return;
           }
 
-          await client.query(
+          const [
+            new_query,
+            querss,
+          ] = await client.query(
             `INSERT INTO menu (name, quantity, price, category, status, image_url) VALUES(?, ?, ?, ?, ?, ?)`,
             [...Object.values(valid.success)]
           );
 
+          const id = new_query.insertId;
+          const {
+            name,
+            quantity,
+            price,
+            category,
+            status,
+            image_url,
+          } = valid.success;
+
+          const item = {
+            id,
+            name,
+            quantity,
+            price,
+            category,
+            status,
+            image_url,
+            date_added: new Date().toISOString().slice(0, 10),
+          };
+
           client.end();
-          res.send({ status: "food item added successfully" });
+          res.send({ status: "food item added successfully", item });
           return;
         }
         res.status(401).json({ error: "Access Denied!" });
@@ -57,12 +81,11 @@ const MenuController = {
   async getMenu(req, res) {
     const client = await mysql.createConnection(databaseConfig);
     const today = new Date().toISOString().slice(0, 10);
-    const [
-      menu,
-      vals,
-    ] = await client.query(
-      `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE status = ? AND date_added`,
-      ["Available", today]
+    const [menu, vals] = await client.query(
+      // `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE status = ? AND date_added=?`,
+      // ["Available", today]
+      `SELECT *, DATE_FORMAT(date_added, '%Y-%m-%d') AS date_added FROM menu WHERE status = ?`,
+      ["Available"]
     );
 
     if (!menu.length) {
@@ -101,6 +124,55 @@ const MenuController = {
         }
 
         res.status(401).json({ error: "Access Denied!" });
+        return;
+      }
+    });
+  },
+
+  updateMenu(req, res) {
+    jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      } else {
+        if (
+          !token.username.includes("admin") &&
+          !token.username.includes("canteen")
+        )
+          return res.status(401).json({ error: "Access Denied!" });
+
+        const { category, name, price, quantity, status } = req.body;
+
+        const client = await mysql.createConnection(databaseConfig);
+        await client.query(
+          `UPDATE menu SET category=?, name=?, price=?, quantity = ?, status = ? WHERE id = ?`,
+          [category, name, price, quantity, status, req.params.menu_id]
+        );
+
+        client.end();
+        res.send({ status: "food item updated successfully" });
+        return;
+      }
+    });
+  },
+
+  deleteMenu(req, res) {
+    jwt.verify(req.token, process.env.SECRET_KEY, async (err, token) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      } else {
+        if (
+          !token.username.includes("admin") &&
+          !token.username.includes("canteen")
+        )
+          return res.status(401).json({ error: "Access Denied!" });
+
+        const client = await mysql.createConnection(databaseConfig);
+        await client.query(`DELETE FROM menu WHERE id = ?`, [
+          req.params.menu_id,
+        ]);
+
+        client.end();
+        res.send({ status: "food item deleted successfully" });
         return;
       }
     });

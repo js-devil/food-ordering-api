@@ -6,7 +6,7 @@ const newMenu = (payload) => {
       name: Joi.string().min(6).max(30).required(),
       quantity: Joi.number().max(200).required(),
       price: Joi.number().min(50).max(200).required(),
-      category: Joi.string().min(4).max(30).required(),
+      category: Joi.string().min(3).max(30).required(),
       status: Joi.string().min(6).max(30).required(),
       image_url: Joi.string().uri().lowercase(),
     });

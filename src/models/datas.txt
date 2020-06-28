@@ -31,4 +31,11 @@
   password: "0luw@seyi44J",
 }
 
+{
+  host: "https://databases.000webhost.com/",
+  database: "id12466367_food_project",
+  user: "id12466367_nandar",
+  password: "0luw@seyi44J",
+}
+
 // "start": "nodemon index.js --exec babel-node --",

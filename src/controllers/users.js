@@ -56,7 +56,7 @@ const UserController = {
           username: req.body.username,
         },
         process.env.SECRET_KEY,
-        { expiresIn: "30m" }
+        { expiresIn: "2h" }
       );
       res.send({
         token,
@@ -104,7 +104,7 @@ const UserController = {
       if (validPassword) {
         const { id, username, image_url, balance } = rows[0];
         const token = jwt.sign({ id, username }, process.env.SECRET_KEY, {
-          expiresIn: "30m",
+          expiresIn: "2h",
         });
 
         res.send({ token, username, image_url, balance });

@@ -11,4 +11,7 @@ router.get("", MenuController.getMenu);
 
 router.post("/:menu_id/update", auth, MenuController.updateQuantity);
 
+router.put("/:menu_id/update", auth, MenuController.updateMenu);
+router.delete("/:menu_id", auth, MenuController.deleteMenu);
+
 export default router;
