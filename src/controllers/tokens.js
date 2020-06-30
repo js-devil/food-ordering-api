@@ -110,7 +110,9 @@ const TokenController = {
           token.username.includes("canteen")
         ) {
           const client = await mysql.createConnection(databaseConfig);
-          const [tokens, vals] = await client.query(`SELECT * FROM tokens`);
+          const [tokens, vals] = await client.query(
+            `SELECT tokens.id, tokens.amount, tokens.available, tokens.date_added, tokens.date_used, tokens.token, users.username FROM tokens LEFT JOIN users ON tokens.used_by=users.id`
+          );
 
           res.send({ tokens });
           client.end();
