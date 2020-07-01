@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
 import databaseConfig from "../models/db";
-require("dotenv").config();
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
