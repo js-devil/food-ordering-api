@@ -2,6 +2,7 @@ import mysql from "mysql2/promise";
 import databaseConfig from "../models/db";
 
 import jwt from "jsonwebtoken";
+require("dotenv").config();
 
 const cancelExpired = (date) => {
   return new Date() - new Date(date) > 10 * 60 * 1000 ? true : false;
