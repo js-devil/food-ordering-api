@@ -15,13 +15,14 @@ const TokenController = {
         ) {
           const client = await mysql.createConnection(databaseConfig);
           if (req.body.number_of_tokens && req.body.amount) {
-            for (let i = 1; i <= req.body.number_of_tokens; ++i) {
-              // console.log(i+" - "+String(Math.ceil(Math.random(2)*1e16)))
+            for (let i = 1; i <= req.body.number_of_tokens; i++)
               await client.query(
                 "INSERT INTO tokens(token, amount, date_added) VALUES(?, ?, current_timestamp())",
-                [String(Math.ceil(Math.random(2) * 1e16)), req.body.amount]
+                [
+                  String(Math.floor(100000 + Math.random() * 9000000000000000)),
+                  req.body.amount,
+                ]
               );
-            }
 
             client.end();
             res.send({
